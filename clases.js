@@ -2,6 +2,11 @@ class Tablero {
     dimensiones; // 10x10
     celdas; //100
 
+    constructor(dimensiones, celdas){
+        this.dimensiones = dimensiones;
+        this.celdas= celdas;
+    }
+
     generarTablero(){}
     mostrarTablero(){}
 }
@@ -9,17 +14,32 @@ class Tablero {
 class Celda {
     x;
     y;
-    nombreBarco;
-    agua;
+    barco; // T -F
+    agua; // T-F
+
+    constructor(x, y, barco, agua){
+        this.x = x;
+        this.y = y;
+        this.barco = barco;
+        this.agua = agua;
+    }
 
 }
 
 class Barco {
-    tipo; // tipos de barcos existentes
+    nombreBarco; // tipos de barcos existentes
     posiciones;
     direccion;
     estado;  //tocado o hundido
     celdasTocadas; //numeros de cuantas celdas hay tocadas
+
+    constructor(nombreBarco, posiciones, direccion, estado, celdasTocadas){
+        this.nombreBarco = nombreBarco;
+        this.posiciones = posiciones;
+        this.direccion = direccion;
+        this.estado = estado;
+        this.celdasTocadas = celdasTocadas;
+    }
 
     colocarBarco(){}
     tieneEspacio(){}
