@@ -1,26 +1,32 @@
 class Tablero {
-    dimensiones; // filas/columnas
-    celdas; //100
-    dificultad;
+    dimensiones; // filas/columnas -> en nuestro caso 10
+    celdas; // 100
 
-    constructor(dimensiones, celdas) {
+    constructor(dimensiones) {
         this.dimensiones = dimensiones;
-        this.celdas = celdas;
+        this.celdas =  dimensiones * dimensiones;
     }
 
     generarTablero() {
-        const filasColumnas = 10;
 
         let tablero = document.createElement("div");
         tablero.id = "tablero";
 
-        for (let i = 0; i < filasColumnas; i++) {
-            for (let j = 0; j < filasColumnas; j++) {
+        tablero.style.display = "inline-block";
+        tablero.style.border = "1px solid black"; 
+
+        for (let i = 0; i < this.dimensiones; i++) {
+            for (let j = 0; j < this.dimensiones; j++) {
                 let celda = document.createElement("div");
                 celda.classList.add("celda");
-                celda.setAttribute("id", i + "-" + j);
+                celda.id = `${i}-${j}`;
                 tablero.appendChild(celda);
-                celda.style.backgroundColor = "blue";
+                //estilos temporales
+                //celda.style.width = "30px"; // Añadir tamaño a las celdas
+               // celda.style.height = "30px";
+               // celda.style.display = "inline-block";
+               // celda.style.backgroundColor = "blue";
+               // celda.style.border = "1px solid white"; // Bordes temporales
             }
         }
         document.querySelector("#juego").appendChild(tablero);
@@ -71,4 +77,10 @@ const barcosJSON = [
     { "name": "Destructor", "size": 2 }
 ];
 
-const arraybarcos = JSON.parse(barcosJSON);
+barcosJSON.forEach(barco => {
+    console.log(`Nombre: ${barco.name}, Tamaño: ${barco.size}`);
+ });
+
+//instanciamos el tablero
+let miTablero = new Tablero(10);
+miTablero.generarTablero();
