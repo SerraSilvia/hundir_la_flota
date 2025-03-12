@@ -1,14 +1,30 @@
 class Tablero {
-    dimensiones; // 10x10
+    dimensiones; // filas/columnas
     celdas; //100
+    dificultad;
 
-    constructor(dimensiones, celdas){
+    constructor(dimensiones, celdas) {
         this.dimensiones = dimensiones;
-        this.celdas= celdas;
+        this.celdas = celdas;
     }
 
-    generarTablero(){}
-    mostrarTablero(){}
+    generarTablero() {
+        const filasColumnas = 10;
+
+        let tablero = document.createElement("div");
+        tablero.id = "tablero";
+
+        for (let i = 0; i < filasColumnas; i++) {
+            for (let j = 0; j < filasColumnas; j++) {
+                let celda = document.createElement("div");
+                celda.classList.add("celda");
+                celda.setAttribute("id", i + "-" + j);
+                tablero.appendChild(celda);
+                celda.style.backgroundColor = "blue";
+            }
+        }
+        document.querySelector("#juego").appendChild(tablero);
+    }
 }
 
 class Celda {
@@ -17,7 +33,7 @@ class Celda {
     barco; // T -F
     agua; // T-F
 
-    constructor(x, y, barco, agua){
+    constructor(x, y, barco, agua) {
         this.x = x;
         this.y = y;
         this.barco = barco;
@@ -33,7 +49,7 @@ class Barco {
     estado;  //tocado o hundido
     celdasTocadas; //numeros de cuantas celdas hay tocadas
 
-    constructor(nombreBarco, posiciones, direccion, estado, celdasTocadas){
+    constructor(nombreBarco, posiciones, direccion, estado, celdasTocadas) {
         this.nombreBarco = nombreBarco;
         this.posiciones = posiciones;
         this.direccion = direccion;
@@ -41,10 +57,10 @@ class Barco {
         this.celdasTocadas = celdasTocadas;
     }
 
-    colocarBarco(){}
-    tieneEspacio(){}
-    hundir(){}
-    tocar(){}
+    colocarBarco() { }
+    tieneEspacio() { }
+    hundir() { }
+    tocar() { }
 }
 
 const barcosJSON = [
@@ -54,5 +70,5 @@ const barcosJSON = [
     { "name": "Submarino", "size": 3 },
     { "name": "Destructor", "size": 2 }
 ];
- 
+
 const arraybarcos = JSON.parse(barcosJSON);
