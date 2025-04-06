@@ -74,7 +74,7 @@ class Tablero {
         barco.posiciones.forEach(pos => {
             let celda = document.getElementById(`${pos.x}-${pos.y}`);
             if (celda) {
-                celda.style.backgroundColor = "grey";
+                celda.style.backgroundColor = barco.color;
                 celda.textContent = "🚢";
             }
         });
@@ -100,11 +100,13 @@ class Barco {
     nombreBarco; // tipos de barcos existentes
     size; // size
     posiciones; //x - y
+    color;
 
-    constructor(nombreBarco, size) {
+    constructor(nombreBarco, size, color) {
         this.nombreBarco = nombreBarco;
         this.size = size;
         this.posiciones = [];
+        this.color = color;
     }
 }
 
@@ -120,9 +122,20 @@ const barcosJSON = [
     { "name": "Destructor", "size": 2 }
 ];
 
+const coloresBarco = {
+    "Portaaviones": "red",
+    "Acorazado": "blue",
+    "Crucero": "green",
+    "Submarino": "orange",
+    "Destructor": "purple"
+};
+
 barcosJSON.forEach(barco => {
     console.log(`Nombre: ${barco.name}, Tamaño: ${barco.size}`);
-    var barco = new Barco(barco.name, barco.size)
-    miTablero.generarBarco(barco);
+    // Asignamos color según el nombre
+    const color = coloresBarco[barco.name] || "grey"; 
+    const barcoInstancia = new Barco(barco.name, barco.size, color);
+    miTablero.generarBarco(barcoInstancia);
 });
+
 
