@@ -99,12 +99,14 @@ class Celda {
 class Barco {
     nombreBarco; // tipos de barcos existentes
     size; // size
+    color;
     posiciones; //x - y
     color;
 
     constructor(nombreBarco, size, color) {
         this.nombreBarco = nombreBarco;
         this.size = size;
+        this.color = "";
         this.posiciones = [];
         this.color = color;
     }
@@ -131,6 +133,7 @@ const coloresBarco = {
 };
 
 barcosJSON.forEach(barco => {
+<<<<<<< HEAD
     console.log(`Nombre: ${barco.name}, Tamaño: ${barco.size}`);
     // Asignamos color según el nombre
     const color = coloresBarco[barco.name] || "grey"; 
@@ -139,3 +142,18 @@ barcosJSON.forEach(barco => {
 });
 
 
+=======
+    console.log(`Nombre: ${barco.name}, Tamaño: ${barco.size}, Color: ${barco.color}`);
+    var barco = new Barco(barco.name, barco.size, barco.color)
+    barco.color = generarColorAleatorio();
+    miTablero.generarBarco(barco);
+});
+
+
+function generarColorAleatorio(barco) {
+    const color  = ["blue", "green", "pink", "purple", "orange"];
+    return color[Math.floor(Math.random()*color.length)]
+    
+}
+
+>>>>>>> 0ed158c3311a4a15ce32e08e44fbc8c5c4b21475
