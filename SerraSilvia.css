@@ -19,3 +19,11 @@
     align-items: center;
     background-color: rgb(164, 219, 252);
   }
+
+  #juego{
+    box-sizing: border-box;
+    padding: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }

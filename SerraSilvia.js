@@ -1,10 +1,14 @@
 class Tablero {
     dimensiones; // filas/columnas -> en nuestro caso 10
     celdasOcupadas;
+    esJugador; // jugador o IA
+    barcos = [];
 
-    constructor(dimensiones) {
+    constructor(dimensiones, barcos = [], esJugador= false) {
         this.dimensiones = dimensiones;
         this.celdasOcupadas = new Set();
+        this.esJugador= esJugador;
+        this.barcos = barcos;
     }
 
     generarTablero() {
@@ -14,6 +18,8 @@ class Tablero {
 
         tablero.style.display = "inline-block";
         tablero.style.border = "1px solid black";
+
+        this.generarBotonera();
 
         for (let i = 0; i < this.dimensiones; i++) {
             for (let j = 0; j < this.dimensiones; j++) {
@@ -25,7 +31,18 @@ class Tablero {
         }
         document.querySelector("#juego").appendChild(tablero);
     }
+    generarBotonera(){
 
+    }
+    generarBarcos(){
+        this.barcos.forEach(barco => {
+            console.log(`Nombre: ${barco.name}, Tamaño: ${barco.size}`);
+            const color = coloresBarco[barco.name] || "grey"; 
+            const barcoInstancia = new Barco(barco.name, barco.size, color);
+            tableroIA.generarBarco(barcoInstancia);
+        });
+        
+    }
     generarBarco(barco) {
         let posicionOk = false;
         let posicionesTemporales = [];
@@ -99,22 +116,16 @@ class Celda {
 class Barco {
     nombreBarco; // tipos de barcos existentes
     size; // size
-    color;
     posiciones; //x - y
     color;
 
     constructor(nombreBarco, size, color) {
         this.nombreBarco = nombreBarco;
         this.size = size;
-        this.color = "";
         this.posiciones = [];
         this.color = color;
     }
 }
-
-//instanciamos el tablero
-let miTablero = new Tablero(10);
-miTablero.generarTablero();
 
 const barcosJSON = [
     { "name": "Portaaviones", "size": 5 },
@@ -132,28 +143,12 @@ const coloresBarco = {
     "Destructor": "purple"
 };
 
-barcosJSON.forEach(barco => {
-<<<<<<< HEAD
-    console.log(`Nombre: ${barco.name}, Tamaño: ${barco.size}`);
-    // Asignamos color según el nombre
-    const color = coloresBarco[barco.name] || "grey"; 
-    const barcoInstancia = new Barco(barco.name, barco.size, color);
-    miTablero.generarBarco(barcoInstancia);
-});
+//instanciamos el tablero de la IA
+let tableroIA = new Tablero(10, barcosJSON);
+tableroIA.generarTablero();
+tableroIA.generarBarcos();
 
+//instanciamos el tablero del jugador
+let tableroJugador = new Tablero(10, barcosJSON, true);
+tableroJugador.generarTablero();
 
-=======
-    console.log(`Nombre: ${barco.name}, Tamaño: ${barco.size}, Color: ${barco.color}`);
-    var barco = new Barco(barco.name, barco.size, barco.color)
-    barco.color = generarColorAleatorio();
-    miTablero.generarBarco(barco);
-});
-
-
-function generarColorAleatorio(barco) {
-    const color  = ["blue", "green", "pink", "purple", "orange"];
-    return color[Math.floor(Math.random()*color.length)]
-    
-}
-
->>>>>>> 0ed158c3311a4a15ce32e08e44fbc8c5c4b21475
