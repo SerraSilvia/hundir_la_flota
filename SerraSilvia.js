@@ -11,12 +11,18 @@ const barcosJSON = [
 
 //instanciamos el tablero de la IA
 let tableroIA = new Tablero(10, barcosJSON);
+let tableroJugador = new Tablero(10, barcosJSON, true);
+
+let juego = new GestorJuego();
+juego.setTableros(tableroJugador, tableroIA);
+
+tableroJugador.setGestorJuego(juego);
+tableroIA.setGestorJuego(juego);
+
+tableroJugador.generarTablero();
 tableroIA.generarTablero();
 tableroIA.generarBarcos();
 
-//instanciamos el tablero del jugador
-let tableroJugador = new Tablero(10, barcosJSON, true);
-tableroJugador.generarTablero();
 document.addEventListener('keydown', (event) => {
     if (event.key === 'R' || event.key === 'r') {
         if(tableroJugador)
@@ -24,8 +30,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-//Sistema de turnos
-let juego = new GestorJuego();
-
-
-
+window.tableroIA = tableroIA;
+window.tableroJugador = tableroJugador;
+window.juego = juego;
+window.turnoIA = false;

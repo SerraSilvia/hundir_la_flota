@@ -8,6 +8,7 @@ export class Tablero {
     barcoSeleccionado = null;
     barcosAnadidos = [];
     orientacionBarcoSeleccionadoHorizontal = true;
+    juego = null;
 
     constructor(dimensiones, barcos = [], esJugador= false) {
         this.dimensiones = dimensiones;
@@ -44,6 +45,8 @@ export class Tablero {
         } else {
             document.querySelector("#ia").appendChild(tablero);
         }
+
+
     }
 
     generarBotonera(){
@@ -110,7 +113,8 @@ export class Tablero {
 
         barco.posiciones = posicionesTemporales;
         posicionesTemporales.forEach(pos => this.celdasOcupadas.add(`${pos.x}-${pos.y}`));
-        this.pintarBarco(barco);
+        this.barcosAnadidos.push(barco);
+        //this.pintarBarco(barco);
     }
 
     generarBarcoJugador(barco, x = null, y = null) {
@@ -171,8 +175,14 @@ export class Tablero {
         if (posicionOk) {
             barco.posiciones = posicionesTemporales;
             posicionesTemporales.forEach(pos => this.celdasOcupadas.add(`${pos.x}-${pos.y}`));
+            this.barcosAnadidos.push(barco);
             this.pintarBarco(barco);
            
+            if (this.barcoSeleccionado) {
+                document.querySelector('#barco' + barco.name).disabled = true;
+                this.barcoSeleccionado = null;
+            }
+
             // Comprobamos si hemos colocados todos los barcos y si es así mostramos el botón para jugar
             if(this.barcos.length == this.barcosAnadidos.length) {
                 this.mostrarJugar();
@@ -197,13 +207,7 @@ export class Tablero {
 
             if (celda) {
                 celda.style.backgroundColor = barco.color;
-                celda.textContent = "🚢";
-
-                if (this.barcoSeleccionado) {
-                    this.barcosAnadidos.push(barco);
-                    document.querySelector('#barco' + barco.name).disabled = true;
-                    this.barcoSeleccionado = null;
-                }
+                celda.textContent = "🚢";               
             }
         });
     }
@@ -219,12 +223,69 @@ export class Tablero {
     addEventListenerClick() {
         document.querySelectorAll('#ia #tablero .celda').forEach((elemento) => {
             elemento.addEventListener('click', (event) => {
+                if (window.turnoIA) return;
+
                 let celdaId = event.target.id;
-                console.log(`Celda pulsada: ${celdaId} `);
+                const [x, y] = celdaId.split('-').map(Number);
 
-                //Detectar si agua, tocado, hundido
+                if (event.target.classList.contains('disparado')) return;
+                event.target.classList.add('disparado');
 
+                const resultado = window.tableroIA.recibirAtaque(x, y);
+
+                if (resultado === 'agua') {
+                    event.target.textContent = '💧';
+                    window.turnoIA = true;
+                    setTimeout(() => window.juego.turnoIAIA(), 1000); // Turno IA tras pequeño delay
+                } else {
+                    event.target.textContent = '💥';
+                    
+                    // Verificamos si ha ganado el jugador
+                    if (window.tableroIA.todosBarcosHundidos()) {
+                        alert("¡Has ganado!");
+                        this.deshabilitarClicks();
+                    }
+                }
             });
-        })
+        });
+    }
+
+    recibirAtaque(x, y) {
+        let resultado = 'agua';
+        let i = 0;
+        let encontrado = false;
+    
+        while (i < this.barcosAnadidos.length && !encontrado) {
+            let barco = this.barcosAnadidos[i];
+            let index = barco.posiciones.findIndex(pos => pos.x === x && pos.y === y);
+    
+            if (index !== -1) {
+                barco.posiciones.splice(index, 1); // quitamos la posición impactada
+                resultado = barco.posiciones.length === 0 ? 'hundido' : 'tocado';
+                encontrado = true;
+            }
+    
+            i++;
+        }
+    
+        return resultado;
+    }
+    
+    mostrarJugar() {
+        if (this.juego) this.juego.mostrarJugar();
+    }
+
+    setGestorJuego(juego) {
+        this.juego = juego;
+    }
+
+    todosBarcosHundidos() {
+        return this.barcosAnadidos.every(barco => barco.posiciones.length === 0);
+    }
+    
+    deshabilitarClicks() {
+        document.querySelectorAll('.celda').forEach(celda => {
+            celda.style.pointerEvents = 'none';
+        });
     }
 }
