@@ -1,3 +1,35 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(164, 219, 252);
+  background-image: url(/assets/battleship_background_no_grid_1080p.png);
+  font-family: 'Courier New', Courier, monospace;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #001f3f;
+}
+
+h1{
+  font-size: 3em;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 2px 2px 5px #000;
+  margin-top: 20px;
+  font-size: 80px;
+}
+
+#intro{
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 65%;
+  padding: 10px;
+  font-size: 1.1em;
+  line-height: 1.6;
+  text-align: center;
+}
+
 #tablero {
     width: 500px;
     height: 500px;
