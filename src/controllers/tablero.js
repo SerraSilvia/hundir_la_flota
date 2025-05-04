@@ -6,6 +6,7 @@ export class Tablero {
     esJugador; // jugador o IA
     barcos = [];
     barcoSeleccionado = null;
+    barcosAnadidos = [];
     orientacionBarcoSeleccionadoHorizontal = true;
 
     constructor(dimensiones, barcos = [], esJugador= false) {
@@ -111,6 +112,7 @@ export class Tablero {
         posicionesTemporales.forEach(pos => this.celdasOcupadas.add(`${pos.x}-${pos.y}`));
         this.pintarBarco(barco);
     }
+
     generarBarcoJugador(barco, x = null, y = null) {
         let posicionOk = false;
         let posicionesTemporales = [];
@@ -170,6 +172,15 @@ export class Tablero {
             barco.posiciones = posicionesTemporales;
             posicionesTemporales.forEach(pos => this.celdasOcupadas.add(`${pos.x}-${pos.y}`));
             this.pintarBarco(barco);
+           
+            // Comprobamos si hemos colocados todos los barcos y si es así mostramos el botón para jugar
+            if(this.barcos.length == this.barcosAnadidos.length) {
+                this.mostrarJugar();
+
+                //Activar detección pulsaciones en tablero
+                this.addEventListenerClick();
+            }
+
         } else {
             console.log(`El barco ${barco.name} no se puede insertar en las coordenadas (${x}, ${y}).`);
         }
@@ -189,17 +200,31 @@ export class Tablero {
                 celda.textContent = "🚢";
 
                 if (this.barcoSeleccionado) {
+                    this.barcosAnadidos.push(barco);
                     document.querySelector('#barco' + barco.name).disabled = true;
                     this.barcoSeleccionado = null;
                 }
             }
         });
     }
+
     insertarBarco(barco) {
         this.barcoSeleccionado = barco;
     }
 
     rotarBarco() {
         this.orientacionBarcoSeleccionadoHorizontal = !this.orientacionBarcoSeleccionadoHorizontal;
+    }
+
+    addEventListenerClick() {
+        document.querySelectorAll('#ia #tablero .celda').forEach((elemento) => {
+            elemento.addEventListener('click', (event) => {
+                let celdaId = event.target.id;
+                console.log(`Celda pulsada: ${celdaId} `);
+
+                //Detectar si agua, tocado, hundido
+
+            });
+        })
     }
 }

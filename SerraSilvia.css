@@ -84,5 +84,41 @@ h2{
     padding: 20px;
     font-size: 1.1em;
     line-height: 1.6;
+  }
 
+  .animacion-jugar {
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, .5);
+    animation: animar-jugar 2s ease-in-out forwards;
+  }
+
+  .texto-animacion {
+    font-size: 6em;
+    text-align: center;
+    color: #fff;
+    margin-top: 20px;
+  }
+
+  @keyframes animar-jugar {
+    0% {
+      opacity: 0;
+    }
+    60% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      display: none;
+    }
   }

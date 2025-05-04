@@ -1,4 +1,5 @@
 import { Tablero } from './src/controllers/tablero.js';
+import { GestorJuego } from './src/controllers/juego.js';
 
 const barcosJSON = [
     { "name": "Portaaviones", "size": 5 },
@@ -22,4 +23,9 @@ document.addEventListener('keydown', (event) => {
             tableroJugador.rotarBarco();
     }
 });
+
+//Sistema de turnos
+let juego = new GestorJuego();
+
+
 
