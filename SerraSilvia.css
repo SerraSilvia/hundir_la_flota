@@ -16,14 +16,28 @@ h1{
   color: #ffffff;
   text-shadow: 2px 2px 5px #000;
   margin-top: 20px;
-  font-size: 80px;
+  font-size: 60px;
+}
+
+h2{
+  margin-top: 5px;
+}
+
+#header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 30px 60px;
+  flex-wrap: wrap;
 }
 
 #intro{
   background: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   margin: 20px auto;
-  max-width: 65%;
+  max-width: 25%;
+  max-height: 15%;
   padding: 10px;
   font-size: 1.1em;
   line-height: 1.6;
@@ -58,5 +72,17 @@ h1{
     padding-right: 40px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: top;
+    gap: 20px;;
+  }
+
+  #jugador, #ia{
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 45%;
+    padding: 20px;
+    font-size: 1.1em;
+    line-height: 1.6;
+
   }

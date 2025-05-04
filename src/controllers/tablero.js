@@ -39,7 +39,7 @@ export class Tablero {
         }
         if(this.esJugador) {
             this.generarBotonera();
-            document.querySelector("#jugador").appendChild(tablero);
+            document.querySelector("#jugador #tablero-jugador").appendChild(tablero);
         } else {
             document.querySelector("#ia").appendChild(tablero);
         }
