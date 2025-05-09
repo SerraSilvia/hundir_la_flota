@@ -15,7 +15,7 @@ export class Tablero {
         this.celdasOcupadas = new Set();
         this.esJugador= esJugador;
         this.barcos = barcos;
-        this.actualizarInfo("Coloca los barcos en el tablero");
+        this.actualizarInfo();
     }
 
     actualizarInfo() {
@@ -321,4 +321,51 @@ export class Tablero {
             infoDiv.innerHTML = "<p>Info: ¡A jugar!</p>";
         }
     }
+
+    guardarPartida() {
+        const partida = {
+            dimensiones: this.dimensiones,
+            barcos: this.barcos.map(barco => ({
+                name: barco.name,
+                size: barco.size,
+                posiciones: barco.posiciones
+            })),
+            barcosAnadidos: this.barcosAnadidos.map(barco => ({
+                name: barco.name,
+                size: barco.size,
+                posiciones: barco.posiciones
+            })),
+            orientacionBarcoSeleccionadoHorizontal: this.orientacionBarcoSeleccionadoHorizontal
+        };
+    }
+
+    cargarPartida() {
+        const partidaGuardada = localStorage.getItem('partidaGuardada');
+    
+        const infoDiv = document.getElementById("info");
+    
+        if (partidaGuardada) {
+            const partida = JSON.parse(partidaGuardada);
+    
+            this.dimensiones = partida.dimensiones;
+            this.barcos = partida.barcos.map(barco => new Barco(barco.name, barco.size));
+            this.barcosAnadidos = partida.barcosAnadidos.map(barco => new Barco(barco.name, barco.size));
+    
+            this.barcosAnadidos.forEach(barco => {
+                barco.posiciones.forEach(pos => {
+                    this.celdasOcupadas.add(`${pos.x}-${pos.y}`);
+                });
+            });
+    
+            this.orientacionBarcoSeleccionadoHorizontal = partida.orientacionBarcoSeleccionadoHorizontal;
+    
+            // Actualizar el mensaje en el div#info
+            this.actualizarInfo("Partida cargada correctamente.");
+        } else {
+            // Si no hay partida guardada
+            this.actualizarInfo("No hay ninguna partida guardada.");
+        }
+    }
+    
+
 }
