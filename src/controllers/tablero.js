@@ -10,10 +10,10 @@ export class Tablero {
     orientacionBarcoSeleccionadoHorizontal = true;
     juego = null;
 
-    constructor(dimensiones, barcos = [], esJugador= false) {
+    constructor(dimensiones, barcos = [], esJugador = false) {
         this.dimensiones = dimensiones;
         this.celdasOcupadas = new Set();
-        this.esJugador= esJugador;
+        this.esJugador = esJugador;
         this.barcos = barcos;
         this.actualizarInfo();
     }
@@ -21,7 +21,7 @@ export class Tablero {
     actualizarInfo() {
         const infoDiv = document.getElementById("info");
         const cantidadBarcosColocados = this.barcosAnadidos.length;
-    
+
         if (cantidadBarcosColocados < 5) {
             // Mostrar mensaje de colocar los barcos
             infoDiv.innerHTML = `<p>Info: Coloca los barcos. (${cantidadBarcosColocados}/5)</p>`;
@@ -30,7 +30,7 @@ export class Tablero {
             infoDiv.innerHTML = "<p>Info: ¡A jugar!</p>";
         }
     }
-    
+
     generarTablero() {
         let tablero = document.createElement("div");
         tablero.id = "tablero";
@@ -45,7 +45,7 @@ export class Tablero {
                 celda.id = `${i}-${j}`;
 
                 celda.addEventListener('click', () => {
-                    if(this.barcoSeleccionado) {                         
+                    if (this.barcoSeleccionado) {
                         this.generarBarcoJugador(this.barcoSeleccionado, i, j);
                     }
                 });
@@ -53,7 +53,7 @@ export class Tablero {
                 tablero.appendChild(celda);
             }
         }
-        if(this.esJugador) {
+        if (this.esJugador) {
             this.generarBotonera();
             document.querySelector("#jugador #tablero-jugador").appendChild(tablero);
         } else {
@@ -63,21 +63,21 @@ export class Tablero {
 
     }
 
-    generarBotonera(){
-        for(let barco of this.barcos) {
+    generarBotonera() {
+        for (let barco of this.barcos) {
             let button = document.createElement('button');
             button.setAttribute('id', 'barco' + barco.name);
             button.textContent = barco.name + '-' + barco.size;
             button.addEventListener('click', () => {
                 document.querySelector('#barco' + barco.name).style.fontWeight = 'bold';
-                this.insertarBarco(barco) 
+                this.insertarBarco(barco)
             });
 
             document.querySelector('.botonera').appendChild(button);
         }
     }
 
-    generarBarcos(){
+    generarBarcos() {
         this.barcos.forEach(barco => {
             const barcoInstancia = new Barco(barco.name, barco.size);
             this.generarBarcoIA(barcoInstancia);
@@ -94,13 +94,13 @@ export class Tablero {
 
             var posicionX = Math.floor(Math.random() * 10);
             var posicionY = Math.floor(Math.random() * 10);
-        
+
             var direccion = Math.floor(Math.random() * 4); // 0 horizontal izq, 1 horizontal derecha, 2 vertical arriba, 3 vertical abajo
 
             for (let i = 0; i < barco.size; i++) {
                 let x = posicionX;
                 let y = posicionY;
-    
+
                 switch (direccion) {
                     case 0: //izq
                         x = posicionX - i;
@@ -115,13 +115,13 @@ export class Tablero {
                         y = posicionY + i;
                         break;
                 }
-    
+
                 if (x < 0 || x >= this.dimensiones || y < 0 || y >= this.dimensiones || this.celdasOcupadas.has(`${x}-${y}`)) {
                     posicionOk = false;
                 } else {
                     posicionesTemporales.push({ x, y });
                 }
-            }      
+            }
 
         } while (!posicionOk);
 
@@ -134,24 +134,24 @@ export class Tablero {
     generarBarcoJugador(barco, x = null, y = null) {
         let posicionOk = false;
         let posicionesTemporales = [];
-    
+
         do {
             posicionOk = true;
             posicionesTemporales = [];
-    
+
             var posicionX = x !== null ? x : Math.floor(Math.random() * this.dimensiones);
             var posicionY = y !== null ? y : Math.floor(Math.random() * this.dimensiones);
-    
+
             var direccion = Math.floor(Math.random() * 4); // 0: izq, 1: der, 2: arriba, 3: abajo
-    
+
             if (x !== null && y !== null) {
                 direccion = this.orientacionBarcoSeleccionadoHorizontal ? 1 : 3;
             }
-    
+
             for (let i = 0; i < barco.size; i++) {
                 let tempX = posicionX;
                 let tempY = posicionY;
-    
+
                 switch (direccion) {
                     case 0: // izquierda
                         tempX = posicionX - i;
@@ -166,7 +166,7 @@ export class Tablero {
                         tempY = posicionY + i;
                         break;
                 }
-    
+
                 // Verificar si la posición está fuera del tablero o ya está ocupada
                 if (
                     tempX < 0 || tempX >= this.dimensiones ||
@@ -179,12 +179,12 @@ export class Tablero {
                     posicionesTemporales.push({ x: tempX, y: tempY });
                 }
             }
-    
+
             // Si no se pasan coordenadas, salir del bucle al encontrar una posición válida
             if (x === null && y === null) break;
-    
+
         } while (!posicionOk && x === null && y === null);
-    
+
         // Si la posición es válida, registrar el barco
         if (posicionOk) {
             barco.posiciones = posicionesTemporales;
@@ -201,7 +201,7 @@ export class Tablero {
             }
 
             // Comprobamos si hemos colocados todos los barcos y si es así mostramos el botón para jugar
-            if(this.barcos.length == this.barcosAnadidos.length) {
+            if (this.barcos.length == this.barcosAnadidos.length) {
                 this.mostrarJugar();
 
                 //Activar detección pulsaciones en tablero
@@ -210,8 +210,8 @@ export class Tablero {
 
         } else {
             // Si no se puede insertar el barco, actualizamos el mensaje en el div#info
-        const infoDiv = document.getElementById("info");
-        infoDiv.innerHTML = `<p>Info: El barco ${barco.name} no se puede insertar. Pulsa R para rotar</p>`;
+            const infoDiv = document.getElementById("info");
+            infoDiv.innerHTML = `<p>Info: El barco ${barco.name} no se puede insertar. Pulsa R para rotar</p>`;
         }
     }
     pintarBarco(barco) {
@@ -226,7 +226,7 @@ export class Tablero {
 
             if (celda) {
                 celda.style.backgroundColor = barco.color;
-                celda.textContent = "🚢";               
+                celda.textContent = "🚢";
             }
         });
     }
@@ -258,7 +258,7 @@ export class Tablero {
                     setTimeout(() => window.juego.turnoIAIA(), 1000); // Turno IA tras pequeño delay
                 } else {
                     event.target.textContent = '💥';
-                    
+
                     // Verificamos si ha ganado el jugador
                     if (window.tableroIA.todosBarcosHundidos()) {
                         alert("¡Has ganado!");
@@ -273,23 +273,23 @@ export class Tablero {
         let resultado = 'agua';
         let i = 0;
         let encontrado = false;
-    
+
         while (i < this.barcosAnadidos.length && !encontrado) {
             let barco = this.barcosAnadidos[i];
             let index = barco.posiciones.findIndex(pos => pos.x === x && pos.y === y);
-    
+
             if (index !== -1) {
                 barco.posiciones.splice(index, 1); // quitamos la posición impactada
                 resultado = barco.posiciones.length === 0 ? 'hundido' : 'tocado';
                 encontrado = true;
             }
-    
+
             i++;
         }
-    
+
         return resultado;
     }
-    
+
     mostrarJugar() {
         if (this.juego) this.juego.mostrarJugar();
     }
@@ -301,7 +301,7 @@ export class Tablero {
     todosBarcosHundidos() {
         return this.barcosAnadidos.every(barco => barco.posiciones.length === 0);
     }
-    
+
     deshabilitarClicks() {
         document.querySelectorAll('.celda').forEach(celda => {
             celda.style.pointerEvents = 'none';
@@ -312,7 +312,7 @@ export class Tablero {
         const infoDiv = document.getElementById("info");
         // Verificamos cuántos barcos han sido colocados
         const cantidadBarcosColocados = this.barcosAnadidos.length;
-        
+
         if (cantidadBarcosColocados < 5) {
             // Mostrar mensaje de colocar los barcos
             infoDiv.innerHTML = `<p>Info: Coloca los barcos. (${cantidadBarcosColocados}/5)</p>`;
@@ -322,50 +322,76 @@ export class Tablero {
         }
     }
 
-    guardarPartida() {
+    async guardarPartida(nombreJugador, tableroJugador, tableroIA) {
+        // Crear el objeto partida a enviar
         const partida = {
-            dimensiones: this.dimensiones,
-            barcos: this.barcos.map(barco => ({
+            nombreJugador: nombreJugador,
+            dimensiones: tableroJugador.dimensiones,  // Se asume que 'tableroJugador' tiene el atributo dimensiones
+            barcos: tableroJugador.barcos.map(barco => ({
                 name: barco.name,
                 size: barco.size,
                 posiciones: barco.posiciones
             })),
-            barcosAnadidos: this.barcosAnadidos.map(barco => ({
+            barcosAnadidos: tableroJugador.barcosAnadidos.map(barco => ({
                 name: barco.name,
                 size: barco.size,
                 posiciones: barco.posiciones
             })),
-            orientacionBarcoSeleccionadoHorizontal: this.orientacionBarcoSeleccionadoHorizontal
+            orientacionBarcoSeleccionadoHorizontal: tableroJugador.orientacionBarcoSeleccionadoHorizontal
         };
-    }
-
-    cargarPartida() {
-        const partidaGuardada = localStorage.getItem('partidaGuardada');
     
-        const infoDiv = document.getElementById("info");
-    
-        if (partidaGuardada) {
-            const partida = JSON.parse(partidaGuardada);
-    
-            this.dimensiones = partida.dimensiones;
-            this.barcos = partida.barcos.map(barco => new Barco(barco.name, barco.size));
-            this.barcosAnadidos = partida.barcosAnadidos.map(barco => new Barco(barco.name, barco.size));
-    
-            this.barcosAnadidos.forEach(barco => {
-                barco.posiciones.forEach(pos => {
-                    this.celdasOcupadas.add(`${pos.x}-${pos.y}`);
-                });
+        try {
+            const response = await fetch("http://localhost:3000/partidas", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(partida)  // Enviar los datos como JSON
             });
     
-            this.orientacionBarcoSeleccionadoHorizontal = partida.orientacionBarcoSeleccionadoHorizontal;
+            if (!response.ok) throw new Error("Error al guardar la partida");
     
-            // Actualizar el mensaje en el div#info
-            this.actualizarInfo("Partida cargada correctamente.");
-        } else {
-            // Si no hay partida guardada
-            this.actualizarInfo("No hay ninguna partida guardada.");
+            const data = await response.json();
+            console.log("Partida guardada con éxito:", data);
+            return data.id;  // ID de la partida que se ha guardado
+        } catch (err) {
+            console.error("Error:", err);
         }
     }
     
 
+    async cargarPartida(idPartida) {
+        try {
+            const response = await fetch(`http://localhost:3000/partidas/${idPartida}`);
+            if (!response.ok) throw new Error("No se encontró la partida");
+    
+            const data = await response.json();
+            console.log("Partida cargada:", data);
+    
+            // Restaura la partida
+            const tableroJugador = {
+                dimensiones: data.dimensiones,
+                barcos: data.barcos.map(barco => new Barco(barco.name, barco.size)),
+                barcosAnadidos: data.barcosAnadidos.map(barco => new Barco(barco.name, barco.size)),
+                orientacionBarcoSeleccionadoHorizontal: data.orientacionBarcoSeleccionadoHorizontal
+            };
+    
+            // Rellenar las posiciones de los barcos en los tableros
+            tableroJugador.barcosAnadidos.forEach(barco => {
+                barco.posiciones.forEach(pos => {
+                    // Aquí deberías agregar la lógica para actualizar las celdas ocupadas en el tablero
+                    // Por ejemplo:
+                    // this.celdasOcupadas.add(`${pos.x}-${pos.y}`);
+                });
+            });
+    
+            // Actualizar el estado de la interfaz de usuario
+            this.actualizarInfo("Partida cargada correctamente desde la API.");
+            return tableroJugador;  // Retorna el tablero cargado para usarlo en la interfaz
+        } catch (err) {
+            console.error("Error:", err);
+            this.actualizarInfo("Hubo un error al cargar la partida.");
+        }
+    }
+    
 }
