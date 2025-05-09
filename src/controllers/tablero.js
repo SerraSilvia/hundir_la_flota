@@ -24,10 +24,10 @@ export class Tablero {
 
         if (cantidadBarcosColocados < 5) {
             // Mostrar mensaje de colocar los barcos
-            infoDiv.innerHTML = `<p>Info: Coloca los barcos. (${cantidadBarcosColocados}/5)</p>`;
+            infoDiv.innerHTML = `<p> ❗️ Info: Coloca los barcos. (${cantidadBarcosColocados}/5)</p>`;
         } else {
             // Mostrar mensaje de "¡A jugar!"
-            infoDiv.innerHTML = "<p>Info: ¡A jugar!</p>";
+            infoDiv.innerHTML = "<p>❗️ Info: ¡A jugar!</p>";
         }
     }
 
