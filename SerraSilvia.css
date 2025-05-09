@@ -23,6 +23,10 @@ h2{
   margin-top: 5px;
 }
 
+li{
+  text-align: left;
+}
+
 #header-container {
   display: flex;
   justify-content: space-between;
