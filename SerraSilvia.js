@@ -30,7 +30,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+
 window.tableroIA = tableroIA;
 window.tableroJugador = tableroJugador;
 window.juego = juego;
-window.turnoIA = false;

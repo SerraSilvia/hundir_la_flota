@@ -100,4 +100,5 @@ export class GestorJuego {
             celda.style.pointerEvents = 'none';
         });
     }
+    
 }

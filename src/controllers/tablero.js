@@ -15,8 +15,22 @@ export class Tablero {
         this.celdasOcupadas = new Set();
         this.esJugador= esJugador;
         this.barcos = barcos;
+        this.actualizarInfo("Coloca los barcos en el tablero");
     }
 
+    actualizarInfo() {
+        const infoDiv = document.getElementById("info");
+        const cantidadBarcosColocados = this.barcosAnadidos.length;
+    
+        if (cantidadBarcosColocados < 5) {
+            // Mostrar mensaje de colocar los barcos
+            infoDiv.innerHTML = `<p>Info: Coloca los barcos. (${cantidadBarcosColocados}/5)</p>`;
+        } else {
+            // Mostrar mensaje de "¡A jugar!"
+            infoDiv.innerHTML = "<p>Info: ¡A jugar!</p>";
+        }
+    }
+    
     generarTablero() {
         let tablero = document.createElement("div");
         tablero.id = "tablero";
@@ -177,7 +191,10 @@ export class Tablero {
             posicionesTemporales.forEach(pos => this.celdasOcupadas.add(`${pos.x}-${pos.y}`));
             this.barcosAnadidos.push(barco);
             this.pintarBarco(barco);
-           
+
+            // Actualizamos el mensaje de info al colocar todos los barcos
+            this.actualizarInfo();
+
             if (this.barcoSeleccionado) {
                 document.querySelector('#barco' + barco.name).disabled = true;
                 this.barcoSeleccionado = null;
@@ -192,7 +209,9 @@ export class Tablero {
             }
 
         } else {
-            console.log(`El barco ${barco.name} no se puede insertar en las coordenadas (${x}, ${y}).`);
+            // Si no se puede insertar el barco, actualizamos el mensaje en el div#info
+        const infoDiv = document.getElementById("info");
+        infoDiv.innerHTML = `<p>Info: El barco ${barco.name} no se puede insertar. Pulsa R para rotar</p>`;
         }
     }
     pintarBarco(barco) {
@@ -287,5 +306,19 @@ export class Tablero {
         document.querySelectorAll('.celda').forEach(celda => {
             celda.style.pointerEvents = 'none';
         });
+    }
+
+    actualizarInfo() {
+        const infoDiv = document.getElementById("info");
+        // Verificamos cuántos barcos han sido colocados
+        const cantidadBarcosColocados = this.barcosAnadidos.length;
+        
+        if (cantidadBarcosColocados < 5) {
+            // Mostrar mensaje de colocar los barcos
+            infoDiv.innerHTML = `<p>Info: Coloca los barcos. (${cantidadBarcosColocados}/5)</p>`;
+        } else {
+            // Mostrar mensaje de "¡A jugar!"
+            infoDiv.innerHTML = "<p>Info: ¡A jugar!</p>";
+        }
     }
 }
