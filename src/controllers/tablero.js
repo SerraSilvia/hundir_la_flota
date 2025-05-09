@@ -15,20 +15,7 @@ export class Tablero {
         this.celdasOcupadas = new Set();
         this.esJugador = esJugador;
         this.barcos = barcos;
-        this.actualizarInfo();
-    }
-
-    actualizarInfo() {
-        const infoDiv = document.getElementById("info");
-        const cantidadBarcosColocados = this.barcosAnadidos.length;
-
-        if (cantidadBarcosColocados < 5) {
-            // Mostrar mensaje de colocar los barcos
-            infoDiv.innerHTML = `<p> ❗️ Info: Coloca los barcos. (${cantidadBarcosColocados}/5)</p>`;
-        } else {
-            // Mostrar mensaje de "¡A jugar!"
-            infoDiv.innerHTML = "<p>❗️ Info: ¡A jugar!</p>";
-        }
+        if (this.juego) this.juego.actualizarInfo();
     }
 
     generarTablero() {
