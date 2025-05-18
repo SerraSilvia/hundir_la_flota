@@ -9,6 +9,7 @@ export class Tablero {
     barcosAnadidos = [];
     orientacionBarcoSeleccionadoHorizontal = true;
     juego = null;
+    ataquesRecibidos = [];
 
     constructor(dimensiones, barcos = [], esJugador = false) {
         this.dimensiones = dimensiones;
@@ -19,6 +20,14 @@ export class Tablero {
     }
 
     generarTablero() {
+        if (this.esJugador) {
+            if (document.querySelector("#jugador #tablero-jugador #tablero"))
+                document.querySelector("#jugador #tablero-jugador #tablero").remove();
+        } else {
+            if (document.querySelector("#ia #tablero"))
+                document.querySelector("#ia #tablero").remove();
+        }
+
         let tablero = document.createElement("div");
         tablero.id = "tablero";
 
@@ -51,6 +60,11 @@ export class Tablero {
     }
 
     generarBotonera() {
+        if (document.querySelectorAll('.botonera button').length > 0) {
+            let botones = document.querySelectorAll('.botonera button');
+            botones.forEach(boton => boton.remove());
+        }
+
         for (let barco of this.barcos) {
             let button = document.createElement('button');
             button.setAttribute('id', 'barco' + barco.name);
@@ -274,6 +288,9 @@ export class Tablero {
             i++;
         }
 
+        // Guardar el ataque
+        this.ataquesRecibidos.push({ x, y, resultado });
+
         return resultado;
     }
 
@@ -309,76 +326,60 @@ export class Tablero {
         }
     }
 
-    async guardarPartida(nombreJugador, tableroJugador, tableroIA) {
-        // Crear el objeto partida a enviar
-        const partida = {
-            nombreJugador: nombreJugador,
-            dimensiones: tableroJugador.dimensiones,  // Se asume que 'tableroJugador' tiene el atributo dimensiones
-            barcos: tableroJugador.barcos.map(barco => ({
+    toJSON() {
+        return {
+            dimensiones: this.dimensiones,
+            esJugador: this.esJugador,
+            barcos: this.barcos.map(barco => ({
                 name: barco.name,
                 size: barco.size,
-                posiciones: barco.posiciones
+                color: barco.color
             })),
-            barcosAnadidos: tableroJugador.barcosAnadidos.map(barco => ({
+            barcosAnadidos: this.barcosAnadidos.map(barco => ({
                 name: barco.name,
                 size: barco.size,
+                color: barco.color,
                 posiciones: barco.posiciones
             })),
-            orientacionBarcoSeleccionadoHorizontal: tableroJugador.orientacionBarcoSeleccionadoHorizontal
+            orientacionBarcoSeleccionadoHorizontal: this.orientacionBarcoSeleccionadoHorizontal,
+            celdasOcupadas: Array.from(this.celdasOcupadas),
+            ataquesRecibidos: this.ataquesRecibidos,
         };
-    
-        try {
-            const response = await fetch("http://localhost:3000/partidas", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(partida)  // Enviar los datos como JSON
-            });
-    
-            if (!response.ok) throw new Error("Error al guardar la partida");
-    
-            const data = await response.json();
-            console.log("Partida guardada con éxito:", data);
-            return data.id;  // ID de la partida que se ha guardado
-        } catch (err) {
-            console.error("Error:", err);
-        }
     }
-    
 
-    async cargarPartida(idPartida) {
-        try {
-            const response = await fetch(`http://localhost:3000/partidas/${idPartida}`);
-            if (!response.ok) throw new Error("No se encontró la partida");
-    
-            const data = await response.json();
-            console.log("Partida cargada:", data);
-    
-            // Restaura la partida
-            const tableroJugador = {
-                dimensiones: data.dimensiones,
-                barcos: data.barcos.map(barco => new Barco(barco.name, barco.size)),
-                barcosAnadidos: data.barcosAnadidos.map(barco => new Barco(barco.name, barco.size)),
-                orientacionBarcoSeleccionadoHorizontal: data.orientacionBarcoSeleccionadoHorizontal
-            };
-    
-            // Rellenar las posiciones de los barcos en los tableros
-            tableroJugador.barcosAnadidos.forEach(barco => {
-                barco.posiciones.forEach(pos => {
-                    // Aquí deberías agregar la lógica para actualizar las celdas ocupadas en el tablero
-                    // Por ejemplo:
-                    // this.celdasOcupadas.add(`${pos.x}-${pos.y}`);
-                });
-            });
-    
-            // Actualizar el estado de la interfaz de usuario
-            this.actualizarInfo("Partida cargada correctamente desde la API.");
-            return tableroJugador;  // Retorna el tablero cargado para usarlo en la interfaz
-        } catch (err) {
-            console.error("Error:", err);
-            this.actualizarInfo("Hubo un error al cargar la partida.");
+    cargarJuego() {
+        // Repintar los ataques
+        this.cargarExplosiones();
+
+        if (this.barcos.length == this.barcosAnadidos.length) {
+            this.mostrarJugar();
+
+            //Activar detección pulsaciones en tablero
+            this.addEventListenerClick();
+
+            //Deshabilitamos todos los botones de seleccion de barcos
+            let botones = document.querySelectorAll('.botonera button');
+
+            if (botones.length > 0)
+                botones.forEach(boton => boton.disabled = true);
         }
     }
-    
+
+    cargarExplosiones() {
+        console.log( this.ataquesRecibidos);
+         this.ataquesRecibidos.forEach(ataque => {
+            const celda = this.esJugador
+                ? document.querySelector(`#jugador [id='${ataque.x}-${ataque.y}']`)
+                : document.querySelector(`#ia [id='${ataque.x}-${ataque.y}']`);
+
+            if (!celda) return;
+
+            celda.classList.add('disparado');
+            if (ataque.resultado === 'agua') {
+                celda.textContent = '💧';
+            } else if (ataque.resultado === 'tocado' || ataque.resultado === 'hundido') {
+                celda.textContent = '💥';
+            }
+        });
+    }
 }

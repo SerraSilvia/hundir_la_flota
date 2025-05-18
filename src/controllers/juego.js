@@ -1,10 +1,23 @@
+import { Partida } from "../models/partida.model.js";
+
 export class GestorJuego {
     tableroJugador;
     tableroIA;
     turnoIA = false;
     celdasUsadasPorIA = new Set();
+    url = 'http://localhost:3000/partidas';
 
-    constructor() { }
+    constructor() {
+        document.querySelector('#guardarPartida').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.guardarPartida();
+        });
+
+        document.querySelector('#cargarPartida').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.cargarPartida();
+        });
+    }
 
     setTableros(tableroJugador, tableroIA) {
         this.tableroJugador = tableroJugador;
@@ -84,13 +97,13 @@ export class GestorJuego {
             window.turnoIA = false;
         } else {
             celda.textContent = '💥';
-    
+
             if (window.tableroJugador.todosBarcosHundidos()) {
                 alert("La IA ha ganado.");
                 this.deshabilitarClicks();
                 return;
             }
-    
+
             setTimeout(() => this.turnoIAIA(), 800);
         }
     }
@@ -100,5 +113,62 @@ export class GestorJuego {
             celda.style.pointerEvents = 'none';
         });
     }
-    
+
+    guardarPartida() {
+        try {
+            let jugador = prompt('Introduce el nombre del jugador.');
+
+            let partida = new Partida();
+            partida.setJugador(jugador);
+            partida.setTableroIA(this.tableroIA.toJSON());
+            partida.setTableroJugador(this.tableroJugador.toJSON());
+
+            fetch(this.url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(partida)
+            })
+                .then(response => response.json())
+                .then(data => console.log("Respuesta API:", data))
+                .catch(error => {
+                    console.error("Error en fetch:", error);
+                });
+        } catch (error) {
+            console.error("Error al guardar partida:", error);
+        }
+    }
+
+    cargarPartida() {
+        let identificador = prompt('Introduce el identificador de la partida.');
+
+        fetch(this.url + "/" + identificador, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Respuesta API:", data)
+
+                // Regenerar los tableros usando los datos recibidos
+                this.tableroJugador = Object.assign(this.tableroJugador, JSON.parse(data.tableroJugador));
+                this.tableroIA = Object.assign(this.tableroIA, JSON.parse(data.tableroIA));
+
+                // Vuelve a pintar los tableros en pantalla
+                this.tableroJugador.generarTablero();
+                this.tableroIA.generarTablero();
+
+                // Si tienes barcos añadidos, píntalos también
+                this.tableroJugador.barcosAnadidos.forEach(barco => this.tableroJugador.pintarBarco(barco));
+
+                this.tableroJugador.cargarJuego();
+                this.tableroIA.cargarExplosiones();
+            })
+            .catch(error => {
+                console.error("Error en fetch:", error);
+            });
+    }
 }
